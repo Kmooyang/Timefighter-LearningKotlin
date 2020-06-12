@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         private val TAG = MainActivity::class.java.simpleName
         private const val SCORE_KEY = "SCORE_KEY"
         private const val TIME_LEFT_KEY= "TIME_LEFT_KEY"
+        private const val GAME_START= "GAME_START"
 
     }
 
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState != null){
             score = savedInstanceState.getInt(SCORE_KEY)
             timeLeftOnTimer = savedInstanceState.getLong(TIME_LEFT_KEY)
+            gameStarted = savedInstanceState.getBoolean(GAME_START)
             restoreGame()
         }else{
             resetGame()
@@ -58,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         outState.putInt(SCORE_KEY, score)
         outState.putLong(TIME_LEFT_KEY, timeLeftOnTimer)
+        outState.putBoolean(GAME_START, gameStarted)
         countDownTimer.cancel()
 
         Log.d(TAG, "onSaveInstanceState: Saving Score: $score & Time Left: $timeLeftOnTimer")
@@ -89,7 +92,6 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-
         gameStarted = false
     }
 
@@ -110,8 +112,13 @@ class MainActivity : AppCompatActivity() {
                 endGame()
             }
         }
-        countDownTimer.start()
-        gameStarted = true
+        //this will stop timer from triggering when screen rotates
+        if(gameStarted){
+            countDownTimer.start()
+        }else{
+            gameStarted = false
+        }
+
     }
 
     private fun incrementScore() {
